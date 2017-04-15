@@ -1,0 +1,11 @@
+[iota]
+node=http://localhost:14265
+seed=AAAAAAAA
+address=BBBBBBBB
+tag=STREAMID
+price=1234.5678
+[sensor]
+client_id=abcabcaabc
+client_secret=defdefdef
+username=name@localhost
+password=123456

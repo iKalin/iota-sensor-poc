@@ -1,6 +1,6 @@
 # IOTA Sensor POC
 
-Attach arbitrary data to the IOTA Tangle. Ultimate goal is to provide a POC of how attaching sensor data to the Tangle would work.
+Read sensor data from the public NetAtmo API and attach it to the IOTA Tangle.
 
 ## Installation
 
@@ -10,49 +10,51 @@ pip install -r requirements.txt
 
 ## Configuration
 
-Configuration options can be specified via CLI or config file.
+Configuration options can be specified via CLI or config file. CLI options have higher precendence than the ones specified in configuration file and can be use to override them.
 
 ### CLI arguments
+  `--config`: configuration file to read options from.
+  `--node`: node to connect to (defaults to http://localhost:14265/).
+  `--seed`: seed to use.
+  `--address`: address to send the data to.
+  `--tag`: identifying Tag for the stream
+  `--price`: price value to attach to the data.
+  `--client_id`: client_id to used to connect to the NetAtmo API.
+  `--client_secret`: client_secret used to connect to the NetAtmo API.
+  `--username`: username used to connect to the NetAtmo API.
+  `--password`: password used to connect to the NetAtmo API.
 
-  - `--node`: node to connect to (defaults to http://localhost:14265/).
-  - `--seed`: seed to use.
-  - `--address`: address to send the data to.
-  - `--tag`: identifying Tag for the stream.
-  - `--data`: data to send as part of the transaction(s).
-  - `--file`: file to read data from.
-  - `--config`: configuration file to read options from.
-  - `--stdin`: whether to read data from stdin.
 
 ### Config file format
 
 Most of the options can be specified on an config file. You can tell the script to read this file via the `--config` option.
 
-Here's how your configuration file should look:
+Here's how your configuration file should look (`config.ini.dist`):
 
 ```
-[default]
+[iota]
 node=http://localhost:14265
 seed=AAAAAAAA
 address=BBBBBBBB
 tag=STREAMID
+price=1234.5678
+[sensor]
+client_id=abcabcaabc
+client_secret=defdefdef
+username=name@localhost
+password=123456
 ```
 
 ## Usage
 
-### Send some data 
-
 ```
-sender.py --seed XXXX --address YYYY --data '{"hi": "there"}'
+python poc.py --config configuration-file.ini
 ```
 
-### Send the contents of a file
+## TODO
 
-```
-sender.py --seed XXXX --address YYYY --file /path/to/file
-```
-
-### Send data read from stdin
-
-```
-echo 'some information' | sender.py --stdin --config
-```
+- Offer a way to read sensor data several times and attaching it as a chunk to the Tangle.
+- Handle expired NetAtmo tokens
+- Validate tag's length
+- Add more NetAtmo API methods
+- Better errors for invalid characters in ini files.
