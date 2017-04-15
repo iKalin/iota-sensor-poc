@@ -14,16 +14,16 @@ Configuration options can be specified via CLI or config file. CLI options have 
 
 ### CLI arguments
 
-  `--config`: configuration file to read options from.
-  `--node`: node to connect to (defaults to http://localhost:14265/).
-  `--seed`: seed to use.
-  `--address`: address to send the data to.
-  `--tag`: identifying Tag for the stream
-  `--price`: price value to attach to the data.
-  `--client_id`: client_id to used to connect to the NetAtmo API.
-  `--client_secret`: client_secret used to connect to the NetAtmo API.
-  `--username`: username used to connect to the NetAtmo API.
-  `--password`: password used to connect to the NetAtmo API.
+  - `--config`: configuration file to read options from.
+  - `--node`: node to connect to (defaults to http://localhost:14265/).
+  - `--seed`: seed to use.
+  - `--address`: address to send the data to.
+  - `--tag`: identifying Tag for the stream
+  - `--price`: price value to attach to the data.
+  - `--client_id`: client_id to used to connect to the NetAtmo API.
+  - `--client_secret`: client_secret used to connect to the NetAtmo API.
+  - `--username`: username used to connect to the NetAtmo API.
+  - `--password`: password used to connect to the NetAtmo API.
 
 
 ### Config file format
