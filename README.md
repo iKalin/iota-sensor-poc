@@ -46,6 +46,9 @@ client_id=abcabcaabc
 client_secret=defdefdef
 username=name@localhost
 password=123456
+[buffer]
+size=0
+directory=./buffer/
 ```
 
 ## Usage
