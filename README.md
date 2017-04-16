@@ -24,6 +24,8 @@ Configuration options can be specified via CLI or config file. CLI options have 
   - `--client_secret`: client_secret used to connect to the NetAtmo API.
   - `--username`: username used to connect to the NetAtmo API.
   - `--password`: password used to connect to the NetAtmo API.
+  - `--buffer-size`: how many NetAtmo responses to store locally before attaching them to the Tangle (defaults to 0)
+  - `--buffer-directory`: directory to store NetAtmo responses before attaching them as a single chunk.
 
 
 ### Config file format
