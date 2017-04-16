@@ -77,6 +77,4 @@ class Buffer:
                 'the --buffer-size argument or in your configuration file with'
                 ' the `size` variable under [buffer].'
             ))
-
-        print(directory, size)
         return cls(directory, size)

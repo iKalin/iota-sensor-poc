@@ -76,8 +76,6 @@ def attach_tagged_data(api, address, data, tag):
     message = TryteString.from_bytes(data)
     transaction = ProposedTransaction(address, 0, tag=tag, message=message)
     try:
-        import os
-        os.environ['HTTP_PROXY'] = 'socks4://localhost:5555'
         transfer_response = api.send_transfer(9, [transaction])
     except ConnectionError:
         raise IOError('Couldn\'t connect to node.')
