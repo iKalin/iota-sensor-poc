@@ -8,6 +8,8 @@ Read sensor data from the public NetAtmo API and attach it to the IOTA Tangle.
 pip install -r requirements.txt
 ```
 
+On Debian/Ubuntu you might need to install `libssl-dev`.
+
 ## Configuration
 
 Configuration options can be specified via CLI or config file. CLI options have higher precendence than the ones specified in configuration file and can be use to override them.

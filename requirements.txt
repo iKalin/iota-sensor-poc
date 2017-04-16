@@ -1,2 +1,1 @@
 PyOTA==1.1.3
-requests[socks]==2.13.0
