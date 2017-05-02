@@ -96,7 +96,9 @@ def read_configuration_file(config_file_path, section):
         with open(config_file_path) as config_file_handle:
             config.read_file(config_file_handle)
     except IOError:
-        error = 'There was a problem reading the configuration file "{}"'
+        error = ('There was a problem reading the configuration file "{}". '
+                 '(If running as a Snap, make sure you\'re reading from '
+                 'your home directory.)')
         sys.exit(error.format(config_file_path))
     except configparser.MissingSectionHeaderError:
         sys.exit(wrong_header_error)
