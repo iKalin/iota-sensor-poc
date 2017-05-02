@@ -11,7 +11,7 @@ setup(
     url='https://github.com/ivoscc/iota-sensor-poc',
     install_requires=[
         'pyota',
-        'requests',
+        'requests[security]',
         'six',
     ],
     package_dir={'': 'src'},
