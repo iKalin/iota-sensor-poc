@@ -10,6 +10,9 @@ confinement: strict
 
 parts:
   iota-netatmo:
+    build-packages:
+      - libssl-dev
+      - libffi-dev
     source: https://github.com/ivoscc/iota-sensor-poc.git
     plugin: python
     python-version: python3
