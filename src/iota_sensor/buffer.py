@@ -10,6 +10,9 @@ from .cli import read_configuration_file
 from .exceptions import InvalidParameter
 
 
+DEFAULT_BUFFER_SIZE = 0
+
+
 class Buffer:
     """
     Hold retrieved NetAtmo transactions in a buffer directory until we're ready
@@ -62,8 +65,11 @@ class Buffer:
             file_config = read_configuration_file(arguments.config, 'buffer')
 
         size = arguments.buffer_size
-        if size is None and 'size' in file_config:
-           size = file_config.getint('size')
+        if size is None:
+            if 'size' in file_config:
+                size = file_config.getint('size')
+            else:
+                size = DEFAULT_BUFFER_SIZE
         directory = arguments.buffer_directory or file_config.get('directory',
                                                                   None)
 

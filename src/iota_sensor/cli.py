@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import configparser
+import sys
 from argparse import ArgumentParser
 
 from six import text_type
@@ -50,7 +51,6 @@ def configure_argument_parser(description, namespaces):
 
         parser.add_argument(
             '--price',
-            default=0,
             type=float,
             help='price value to attach to the data.',
         )

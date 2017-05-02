@@ -13,6 +13,9 @@ from .cli import read_configuration_file, configure_argument_parser
 from .exceptions import InvalidParameter
 
 
+DEFAULT_PRICE = 0.0
+
+
 IOTAOptions = namedtuple(
     'Options',
     ['node', 'seed', 'address', 'tag', 'price']
@@ -54,12 +57,19 @@ def get_iota_options(arguments):
     if arguments.config is not None:
         file_config = read_configuration_file(arguments.config, 'iota')
 
+    price = arguments.price
+    if price is None:
+        if 'price' in file_config:
+            price = file_config.getfloat('price')
+        else:
+            price = DEFAULT_PRICE
+
     options = IOTAOptions(
         node=arguments.node or file_config.get('node'),
         seed=arguments.seed or file_config.get('seed'),
         address=arguments.address or file_config.get('address'),
         tag=arguments.tag or file_config.get('tag'),
-        price=arguments.tag or file_config.getfloat('price')
+        price=price
     )
 
     error = validate_iota_options(options)

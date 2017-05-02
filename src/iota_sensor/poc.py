@@ -21,7 +21,6 @@ def parse_config():
 
     parser.add_argument(
         '--buffer-size',
-        default=0,
         help=('how many NetAtmo responses to store locally before attaching '
               'them to the Tangle (defaults to 0)'),
         type=int
