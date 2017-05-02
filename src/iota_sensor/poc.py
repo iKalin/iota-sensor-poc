@@ -4,16 +4,50 @@ Read sensor data from the Public NetAtmo API, tag it with a price and attach it
 as transaction to the Tangle.
 """
 import json
+import sys
+
 from six import text_type
-
 from iota import Iota
-from netatmo import APIClient, get_sensor_options
-from sender import get_iota_options, attach_tagged_data
-from cli import configure_argument_parser
-from buffer import Buffer
+
+from .buffer import Buffer
+from .cli import configure_argument_parser
+from .exceptions import InvalidParameter
+from .netatmo import APIClient, get_sensor_options
+from .sender import get_iota_options, attach_tagged_data
 
 
-def main(iota_options, sensor_options, file_buffer):
+def parse_config():
+    parser = configure_argument_parser(__doc__, ['iota', 'sensor'])
+
+    parser.add_argument(
+        '--buffer-size',
+        default=0,
+        help=('how many NetAtmo responses to store locally before attaching '
+              'them to the Tangle (defaults to 0)'),
+        type=int
+    )
+    parser.add_argument(
+        '--buffer-directory',
+        type=text_type,
+        help=(('directory to store NetAtmo responses before attaching them as'
+               ' a single chunk.')),
+    )
+
+    cli_args = parser.parse_args()
+    try:
+        file_buffer = Buffer.from_arguments(cli_args)
+        sensor_options = get_sensor_options(cli_args)
+        iota_options = get_iota_options(cli_args)
+    except InvalidParameter as e:
+        sys.exit(e)
+
+    return iota_options, sensor_options, file_buffer
+
+
+def main():
+
+    iota_options, sensor_options, file_buffer = parse_config()
+
     # configure NetAtmo API client
     sensor_api = APIClient(sensor_options.client_id,
                            sensor_options.client_secret,
@@ -47,24 +81,4 @@ def main(iota_options, sensor_options, file_buffer):
     file_buffer.clear()
 
 if __name__ == '__main__':
-    parser = configure_argument_parser(__doc__, ['iota', 'sensor'])
-
-    parser.add_argument(
-        '--buffer-size',
-        default=0,
-        help=('how many NetAtmo responses to store locally before attaching '
-              'them to the Tangle (defaults to 0)'),
-        type=int
-    )
-    parser.add_argument(
-        '--buffer-directory',
-        type=text_type,
-        help=(('directory to store NetAtmo responses before attaching them as'
-               ' a single chunk.')),
-    )
-
-    cli_args = parser.parse_args()
-    file_buffer = Buffer.from_arguments(cli_args)
-    sensor_options = get_sensor_options(cli_args)
-    iota_options = get_iota_options(cli_args)
-    main(iota_options, sensor_options, file_buffer)
+    main()

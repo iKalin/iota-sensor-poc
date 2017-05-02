@@ -1,4 +1,10 @@
 *.pyc
-config.ini
+build/*
+__pycache__/*
 env/*
+dist/*
+*.egg-info/
+
+config.ini
 buffer/*
+

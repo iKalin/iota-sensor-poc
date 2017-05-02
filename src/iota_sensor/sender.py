@@ -4,13 +4,13 @@ Send arbitrary data as IOTA transactions.
 """
 import sys
 from collections import namedtuple
+
+from iota import Iota, Address, TryteString, ProposedTransaction
+from requests.exceptions import ConnectionError
 from six import text_type
 
-from requests.exceptions import ConnectionError
-
-from cli import read_configuration_file, configure_argument_parser
-from exceptions import InvalidParameter
-from iota import Iota, Address, TryteString, ProposedTransaction
+from .cli import read_configuration_file, configure_argument_parser
+from .exceptions import InvalidParameter
 
 
 IOTAOptions = namedtuple(

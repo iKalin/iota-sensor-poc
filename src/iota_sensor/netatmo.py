@@ -7,8 +7,8 @@ from pprint import pprint
 
 import requests
 
-from cli import configure_argument_parser, read_configuration_file
-from exceptions import InvalidParameter
+from .cli import configure_argument_parser, read_configuration_file
+from .exceptions import InvalidParameter
 
 
 SensorAPIOptions = namedtuple(

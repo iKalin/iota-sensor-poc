@@ -3,10 +3,11 @@ import hashlib
 import json
 import os
 from datetime import datetime
+
 from six import text_type
 
-from cli import read_configuration_file
-from exceptions import InvalidParameter
+from .cli import read_configuration_file
+from .exceptions import InvalidParameter
 
 
 class Buffer:
@@ -60,13 +61,15 @@ class Buffer:
         if arguments.config is not None:
             file_config = read_configuration_file(arguments.config, 'buffer')
 
-        size = arguments.buffer_size or file_config.getint('size', None)
+        size = arguments.buffer_size
+        if size is None and 'size' in file_config:
+           size = file_config.getint('size')
         directory = arguments.buffer_directory or file_config.get('directory',
                                                                   None)
 
         if not isinstance(directory, text_type):
             raise InvalidParameter((
-                'Invalid buffer directory. Please specify it via the'
+                'Invalid buffer directory. Please specify it via the '
                 '--buffer-directory argument or in your configuration '
                 'file with the `directory` variable under [buffer].'
             ))

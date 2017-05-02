@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from argparse import ArgumentParser
-from six import text_type
 import configparser
+from argparse import ArgumentParser
+
+from six import text_type
 
 
 def configure_argument_parser(description, namespaces):
