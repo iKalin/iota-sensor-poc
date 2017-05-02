@@ -1,0 +1,20 @@
+name: iota-netatmo
+version: '0.1'
+summary: Read data from NetAtmo sensor and write it to the IOTA Tangle.
+description: |
+  POC script to read sensor data from the public NetAtmo API and attach it to
+  the IOTA Tangle.
+
+grade: devel
+confinement: strict
+
+parts:
+  iota-netatmo:
+    source: https://github.com/ivoscc/iota-sensor-poc.git
+    plugin: python
+    python-version: python3
+
+apps:
+  iota-netatmo:
+    command: iota-sensor
+    plugs: [network, home]
