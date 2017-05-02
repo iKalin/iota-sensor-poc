@@ -10,6 +10,16 @@ pip install -r requirements.txt
 
 On Debian/Ubuntu you might need to install `libssl-dev`.
 
+## Installation as a Snap
+
+You can install the script as a [Snap](https://www.ubuntu.com/desktop/snappy) by doing:
+
+```
+sudo snap install iota-netatmo --channel=beta
+```
+
+This will expose a `iota-netatmo` command which you can call as if you were calling `poc.py` directly (See Usage below).
+
 ## Configuration
 
 Configuration options can be specified via CLI or config file. CLI options have higher precendence than the ones specified in configuration file and can be use to override them.
@@ -59,10 +69,18 @@ directory=./buffer/
 python poc.py --config configuration-file.ini
 ```
 
+Alternatively, if you've installed the script as a snap, the equivalent call would be:
+
+```
+iota-netatmo --config configuration-file.ini
+```
+
+*Important Note for the snap version*: If you're using a configuration file with the snap version, the file would need to be located in your home directory.
+This is because snaps are contained and only have access to [limited functionality](https://snapcraft.io/docs/reference/interfaces).
+
 ## TODO
 
-- Offer a way to read sensor data several times and attaching it as a chunk to the Tangle.
-- Handle expired NetAtmo tokens
-- Validate tag's length
-- Add more NetAtmo API methods
+- Handle expired NetAtmo tokens instead of requesting a new one each time.
+- Validate tag's length.
+- Add more NetAtmo API methods.
 - Better errors for invalid characters in ini files.
