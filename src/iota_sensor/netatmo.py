@@ -3,11 +3,9 @@
 Read data from NetAtmo's public API.
 """
 from collections import namedtuple
-from pprint import pprint
 
 import requests
 
-from .cli import configure_argument_parser, read_configuration_file
 from .exceptions import InvalidParameter
 
 
@@ -15,6 +13,46 @@ SensorAPIOptions = namedtuple(
     'SensorAPIOptions',
     ['client_id', 'client_secret', 'username', 'password']
 )
+
+
+def get_sensor_options(arguments):
+
+    if arguments.client_id is None:
+        raise InvalidParameter(
+            ('Couldn\'t find a suitable `client_id` to connect to the '
+             'NetAtmo API. Please specify it via the `--client_id` '
+             'option or set the `client_id` variable under the [sensor]'
+             ' section of your configuration file.')
+        )
+
+    if arguments.client_secret is None:
+        raise InvalidParameter(
+            ('Couldn\'t find a suitable `client_secret` to connect to the '
+             'NetAtmo API. Please specify it via the `--client_secret` '
+             'option or set the `client_secret` variable under the [sensor]'
+             ' section of your configuration file.')
+        )
+
+    if arguments.username is None:
+        raise InvalidParameter(
+            ('Couldn\'t find a suitable `username` to connect to the '
+             'NetAtmo API. Please specify it via the `--username` '
+             'option or set the `username` variable under the [sensor]'
+             ' section of your configuration file.')
+        )
+
+    if arguments.password is None:
+        raise InvalidParameter(
+            ('Couldn\'t find a suitable `password` to connect to the '
+             'NetAtmo API. Please specify it via the `--password` '
+             'option or set the `password` variable under the [sensor]'
+             ' section of your configuration file.')
+        )
+
+    return SensorAPIOptions(client_id=arguments.client_id,
+                            client_secret=arguments.client_secret,
+                            username=arguments.username,
+                            password=arguments.password)
 
 
 class APIClient:
@@ -63,73 +101,3 @@ class APIClient:
         if response.status_code != 200:
             raise IOError(response.json())
         return response.json()
-
-
-def validate_sensor_options(options):
-
-    if options.client_id is None:
-        return ('Couldn\'t find a suitable `client_id` to connect to the '
-                'NetAtmo API. Please specify it via the `--client_id` '
-                'option or set the `client_id` variable under the [sensor]'
-                ' section of your configuration file.')
-
-    if options.client_secret is None:
-        return ('Couldn\'t find a suitable `client_secret` to connect to the '
-                'NetAtmo API. Please specify it via the `--client_secret` '
-                'option or set the `client_secret` variable under the [sensor]'
-                ' section of your configuration file.')
-
-    if options.username is None:
-        return ('Couldn\'t find a suitable `username` to connect to the '
-                'NetAtmo API. Please specify it via the `--username` '
-                'option or set the `username` variable under the [sensor]'
-                ' section of your configuration file.')
-
-    if options.password is None:
-        return ('Couldn\'t find a suitable `password` to connect to the '
-                'NetAtmo API. Please specify it via the `--password` '
-                'option or set the `password` variable under the [sensor]'
-                ' section of your configuration file.')
-
-
-def get_sensor_options(arguments):
-    """
-    Parse options from both the CLI and config file if specified.
-    """
-    file_config = {}
-    if arguments.config is not None:
-        file_config = read_configuration_file(arguments.config, 'sensor')
-
-    options = SensorAPIOptions(
-        client_id=arguments.client_id or file_config.get('client_id'),
-        client_secret=arguments.client_secret or file_config.get('client_secret'),
-        username=arguments.username or file_config.get('username'),
-        password=arguments.password or file_config.get('password'),
-    )
-
-    error = validate_sensor_options(options)
-    if error:
-        raise InvalidParameter(error)
-
-    return options
-
-
-def main(options):
-    """ Queries NetAtmo's public API and prints the resulting sensor data. """
-    api = APIClient(options.client_id, options.client_secret,
-                    options.username, options.password)
-    response = api.get_public_data({
-        'lat_ne': 3,
-        'lon_ne': 4,
-        'lat_sw': -2,
-        'lon_sw': -2,
-        'filter': True,
-        'required_data': 'temperature'
-    })
-    pprint(response)
-
-
-if __name__ == '__main__':
-    parser = configure_argument_parser(__doc__, 'sensor')
-    options = get_sensor_options(parser.parse_args())
-    main(options)

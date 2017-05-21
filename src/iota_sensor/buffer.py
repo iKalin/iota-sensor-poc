@@ -6,11 +6,7 @@ from datetime import datetime
 
 from six import text_type
 
-from .cli import read_configuration_file
 from .exceptions import InvalidParameter
-
-
-DEFAULT_BUFFER_SIZE = 0
 
 
 class Buffer:
@@ -60,30 +56,18 @@ class Buffer:
 
     @classmethod
     def from_arguments(cls, arguments):
-        file_config = {}
-        if arguments.config is not None:
-            file_config = read_configuration_file(arguments.config, 'buffer')
-
-        size = arguments.buffer_size
-        if size is None:
-            if 'size' in file_config:
-                size = file_config.getint('size')
-            else:
-                size = DEFAULT_BUFFER_SIZE
-        directory = arguments.buffer_directory or file_config.get('directory',
-                                                                  None)
-
-        if not isinstance(directory, text_type):
+        if not isinstance(arguments.buffer_directory, text_type):
             raise InvalidParameter((
                 'Invalid buffer directory. Please specify it via the '
                 '--buffer-directory argument or in your configuration '
                 'file with the `directory` variable under [buffer].'
             ))
 
-        if not isinstance(size, int) and size >= 0:
+        if (not isinstance(arguments.buffer_size, int)
+                and arguments.buffer_size >= 0):
             raise InvalidParameter((
                 'Invalid buffer size. Please specify a positive integer via '
                 'the --buffer-size argument or in your configuration file with'
                 ' the `size` variable under [buffer].'
             ))
-        return cls(directory, size)
+        return cls(arguments.buffer_directory, arguments.buffer_size)

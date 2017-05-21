@@ -17,37 +17,17 @@ from .sender import get_iota_options, attach_encrypted_message
 from .mam_encryption import get_mam_options
 
 
-def parse_config():
-    parser = configure_argument_parser(__doc__, ['iota', 'sensor', 'mam'])
-
-    parser.add_argument(
-        '--buffer-size',
-        help=('how many NetAtmo responses to store locally before attaching '
-              'them to the Tangle (defaults to 0)'),
-        type=int
-    )
-    parser.add_argument(
-        '--buffer-directory',
-        type=text_type,
-        help=(('directory to store NetAtmo responses before attaching them as'
-               ' a single chunk.')),
-    )
-
-    cli_args = parser.parse_args()
-    try:
-        file_buffer = Buffer.from_arguments(cli_args)
-        sensor_options = get_sensor_options(cli_args)
-        iota_options = get_iota_options(cli_args)
-        mam_options = get_mam_options(cli_args)
-    except InvalidParameter as e:
-        sys.exit(e)
-
-    return iota_options, sensor_options, file_buffer, mam_options
-
-
 def main():
 
-    iota_options, sensor_options, file_buffer, mam_options = parse_config()
+    parser = configure_argument_parser(__doc__)
+    args = parser.parse_args()
+    try:
+        file_buffer = Buffer.from_arguments(args)
+        sensor_options = get_sensor_options(args)
+        iota_options = get_iota_options(args)
+        mam_options = get_mam_options(args)
+    except InvalidParameter as e:
+        sys.exit(e)
 
     # configure NetAtmo API client
     sensor_api = APIClient(sensor_options.client_id,
