@@ -29,15 +29,20 @@ Configuration options can be specified via CLI or config file. CLI options have 
   - `--config`: configuration file to read options from.
   - `--node`: node to connect to (defaults to http://localhost:14265/).
   - `--seed`: seed to use.
-  - `--address`: address to send the data to.
-  - `--tag`: identifying Tag for the stream
   - `--price`: price value to attach to the data.
+  - `--depth`: depth at which to attach the resulting transactions.
+  - `--min-weight-magnitude`: Min weight magnitude, used by the node to calibrate PoW.
   - `--client_id`: client_id to used to connect to the NetAtmo API.
   - `--client_secret`: client_secret used to connect to the NetAtmo API.
   - `--username`: username used to connect to the NetAtmo API.
   - `--password`: password used to connect to the NetAtmo API.
   - `--buffer-size`: how many NetAtmo responses to store locally before attaching them to the Tangle (defaults to 0)
   - `--buffer-directory`: directory to store NetAtmo responses before attaching them as a single chunk.
+  - `--start`: Index of the first key used to encrypt the message.
+  - `--count`: Password used to connect to the NetAtmo API.
+  - `--channel-key-index`: Index of the key used to establish the channel.
+  - `--mam-encrypt-path`: Path to `mam_encrypt.js` script.
+  - `--security_level`: Specifies the security level of your transactions
 
 
 ### Config file format
@@ -50,17 +55,23 @@ Here's how your configuration file should look (`config.ini.dist`):
 [iota]
 node=http://localhost:14265
 seed=AAAAAAAA
-address=BBBBBBBB
-tag=STREAMID
 price=1234.5678
+depth=4
+min_weight_magnitude=13
 [sensor]
 client_id=abcabcaabc
 client_secret=defdefdef
 username=name@localhost
 password=123456
 [buffer]
-size=0
-directory=./buffer/
+buffer_size=0
+buffer_directory=./buffer/
+[mam]
+channel_key_index=42
+start=3
+count=4
+mam_encrypt_path=/somewhere/mam_encrypt.js
+security_level=1
 ```
 
 ## Usage
@@ -81,6 +92,5 @@ This is because snaps are contained and only have access to [limited functionali
 ## TODO
 
 - Handle expired NetAtmo tokens instead of requesting a new one each time.
-- Validate tag's length.
 - Add more NetAtmo API methods.
 - Better errors for invalid characters in ini files.
