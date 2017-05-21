@@ -55,6 +55,19 @@ def configure_argument_parser(description, namespaces):
             help='price value to attach to the data.',
         )
 
+        parser.add_argument(
+            '--depth',
+            type=int,
+            help='Depth at which to attach the resulting transactions.',
+        )
+
+        parser.add_argument(
+            '--min-weight-magnitude',
+            dest='min_weight_magnitude',
+            type=int,
+            help='Min weight magnitude, used by the node to calibrate PoW.'
+        )
+
     if 'sensor' in namespaces:
         parser.add_argument(
             '--client_id',
@@ -79,6 +92,40 @@ def configure_argument_parser(description, namespaces):
             type=text_type,
             help='password used to connect to the NetAtmo API.',
         )
+
+    if 'mam' in namespaces:
+        parser.add_argument(
+            '--start',
+            type=int,
+            help='Index of the first key used to encrypt the message.',
+        )
+
+        parser.add_argument(
+            '--count',
+            type=int,
+            help='Password used to connect to the NetAtmo API.',
+        )
+
+        parser.add_argument(
+            '--channel-key-index',
+            dest='channel_key_index',
+            type=int,
+            help='Index of the key used to establish the channel.',
+        )
+
+        parser.add_argument(
+            '--mam-encrypt-path',
+            dest='mam_encrypt_path',
+            help='Path to `mam_encrypt.js` script.',
+        )
+
+        parser.add_argument(
+            '--security_level',
+            dest='security_level',
+            type=int,
+            help='Specifies the security level of your transactions',
+        )
+
     return parser
 
 

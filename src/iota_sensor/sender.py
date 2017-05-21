@@ -4,21 +4,23 @@ Send arbitrary data as IOTA transactions.
 """
 import sys
 from collections import namedtuple
+from pprint import pprint
 
-from iota import Iota, Address, TryteString, ProposedTransaction
+from iota import Iota, BadApiResponse
 from requests.exceptions import ConnectionError
 from six import text_type
 
 from .cli import read_configuration_file, configure_argument_parser
 from .exceptions import InvalidParameter
+from .mam_encryption import encrypt_message, get_mam_options
 
 
 DEFAULT_PRICE = 0.0
 
 
 IOTAOptions = namedtuple(
-    'Options',
-    ['node', 'seed', 'address', 'tag', 'price']
+    'IOTAOptions', ['node', 'seed', 'address', 'tag', 'price', 'depth',
+                    'min_weight_magnitude']
 )
 
 
@@ -69,7 +71,9 @@ def get_iota_options(arguments):
         seed=arguments.seed or file_config.get('seed'),
         address=arguments.address or file_config.get('address'),
         tag=arguments.tag or file_config.get('tag'),
-        price=price
+        price=price,
+        depth=arguments.depth or file_config.getint('depth'),
+        min_weight_magnitude=arguments.min_weight_magnitude or file_config.getint('min_weight_magnitude'),
     )
 
     error = validate_iota_options(options)
@@ -79,21 +83,32 @@ def get_iota_options(arguments):
     return options
 
 
-def attach_tagged_data(api, address, data, tag):
-    """ """
-    address = Address(address.encode('ascii'))
-    tag = TryteString.from_string(tag)
-    message = TryteString.from_bytes(data)
-    transaction = ProposedTransaction(address, 0, tag=tag, message=message)
+def attach_encrypted_message(message, iota_options, mam_options):
+    iota_api = Iota(iota_options.node, iota_options.seed.encode('ascii'))
+
+    transaction_trytes = encrypt_message(
+        message.decode('utf-8'),
+        iota_api, mam_options
+    )
+
+    if not transaction_trytes:
+        raise Exception('Failed to encrypt message.')
+
     try:
-        transfer_response = api.send_transfer(9, [transaction])
-    except ConnectionError:
-        raise IOError('Couldn\'t connect to node.')
+        iota_api.send_trytes(
+            trytes=transaction_trytes,
+            depth=iota_options.depth,
+            min_weight_magnitude=iota_options.min_weight_magnitude,
+        )
+    except BadApiResponse as e:
+        pprint(getattr(e, 'context', {}))
+        raise
+    return True
 
 
-def main(options, data=None, data_file=None):
+def main(iota_options, mam_options, data=None, data_file=None):
     try:
-        api = Iota(options.node, options.seed.encode('ascii'))
+        api = Iota(iota_options.node, iota_options.seed.encode('ascii'))
     except ValueError:
         sys.exit('The provided seed value is invalid.')
 
@@ -109,11 +124,11 @@ def main(options, data=None, data_file=None):
     else:
         data = sys.stdin.read()
 
-    attach_tagged_data(api, options.address, data, options.tag)
+    attach_encrypted_message(data, iota_options, mam_options)
 
 
 if __name__ == '__main__':
-    parser = configure_argument_parser(__doc__, 'iota')
+    parser = configure_argument_parser(__doc__, ['iota', 'mam'])
 
     parser.add_argument(
         '--data',
@@ -134,10 +149,11 @@ if __name__ == '__main__':
     )
 
     arguments = parser.parse_args()
-    options = get_iota_options(arguments)
+    iota_options = get_iota_options(arguments)
+    mam_options = get_mam_options(arguments)
 
     if not arguments.data and not arguments.file and not arguments.stdin:
         sys.exit(('At least one of `--data`, `--file` or `--stdin` needs to '
                   'be specified to read the message from.'))
 
-    main(options, arguments.data, arguments.file)
+    main(iota_options, mam_options, arguments.data, arguments.file)
