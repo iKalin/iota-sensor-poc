@@ -5,7 +5,7 @@ Read sensor data from the public NetAtmo API and attach it to the IOTA Tangle.
 ## Installation
 
 ```
-pip install -r requirements.txt
+python setup.py install
 ```
 
 On Debian/Ubuntu you might need to install `libssl-dev`.
@@ -77,7 +77,7 @@ security_level=1
 ## Usage
 
 ```
-python poc.py --config configuration-file.ini
+iota-sensor --config configuration-file.ini
 ```
 
 Alternatively, if you've installed the script as a snap, the equivalent call would be:
