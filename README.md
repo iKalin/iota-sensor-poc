@@ -24,6 +24,8 @@ This will expose a `iota-netatmo` command which you can call as if you were call
 
 Configuration options can be specified via CLI or config file. CLI options have higher precendence than the ones specified in configuration file and can be use to override them.
 
+*NOTE*: If using the snap version, set `mam_encrypt_path=/snap/iota-netatmo/current/bin/mam_encrypt`.
+
 ### CLI arguments
 
   - `--config`: configuration file to read options from.
@@ -43,7 +45,6 @@ Configuration options can be specified via CLI or config file. CLI options have 
   - `--channel-key-index`: Index of the key used to establish the channel.
   - `--mam-encrypt-path`: Path to `mam_encrypt.js` script.
   - `--security_level`: Specifies the security level of your transactions
-
 
 ### Config file format
 
